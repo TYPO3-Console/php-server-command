@@ -24,6 +24,7 @@ namespace Typo3Console\PhpServer\Command;
 
 use Helhum\Typo3Console\Mvc\Controller\CommandController;
 use Symfony\Component\Dotenv\Dotenv;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
 class ServerCommandController extends CommandController
@@ -38,23 +39,13 @@ class ServerCommandController extends CommandController
      */
     public function runCommand(string $address = '127.0.0.1:8080')
     {
-        $processBuilder = new ProcessBuilder(
-            [
-                PHP_BINARY,
-                '-S',
-                $address,
-                '-t',
-                getenv('TYPO3_PATH_WEB'),
-            ]
-        );
-        $processBuilder->setTimeout(null);
         // Store current md5 of .env file
         $this->dotEnvChanged();
         $this->outputLine('<info>Server is running at http://%s</info>', [$address]);
         $this->outputLine('Press Ctrl-C to quit.');
 
         do {
-            $process = $processBuilder->getProcess();
+            $process = $this->getProcess($address);
             $process->disableOutput();
             $this->cleanDotEnvVarsForSubProcess();
             $process->start();
@@ -66,6 +57,31 @@ class ServerCommandController extends CommandController
                 sleep(1);
             }
         } while (true);
+    }
+
+    private function getProcess(string $address): Process
+    {
+        $arguments = [
+            PHP_BINARY,
+            '-S',
+            $address,
+            '-t',
+            getenv('TYPO3_PATH_WEB'),
+        ];
+
+        if (class_exists(ProcessBuilder::class)) {
+            $processBuilder = new ProcessBuilder($arguments);
+            $processBuilder->setTimeout(null);
+            return $processBuilder->getProcess();
+        }
+
+        return new Process(
+            $arguments,
+            null,
+            null,
+            null,
+            null
+        );
     }
 
     private function dotEnvChanged(): bool
