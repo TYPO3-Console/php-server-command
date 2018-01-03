@@ -7,9 +7,17 @@
         "helhum/typo3-console": "^5.0",
         "symfony/process": "^3.3.6 || ^4.0"
     },
+    "require-dev": {
+        "helhum/typo3-composer-setup": "^0.5.1"
+    },
     "autoload": {
         "psr-4": {
             "Typo3Console\\PhpServer\\": "src"
+        }
+    },
+    "extra": {
+        "typo3/cms": {
+            "web-dir": "public"
         }
     }
 }
