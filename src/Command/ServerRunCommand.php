@@ -22,32 +22,51 @@ namespace Typo3Console\PhpServer\Command;
  *  This copyright notice MUST APPEAR in all copies of the script!
  ***************************************************************/
 
-use Helhum\Typo3Console\Mvc\Controller\CommandController;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Dotenv\Dotenv;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\ProcessBuilder;
 
-class ServerCommandController extends CommandController
+class ServerRunCommand extends Command
 {
+    protected function configure()
+    {
+        $this->setDefinition(
+            [
+                new InputArgument(
+                    'address',
+                    InputArgument::OPTIONAL,
+                    'Alternative IP address and port',
+                    '127.0.0.1:8080'
+                )
+            ]
+        )
+        ->setDescription('Start a PHP web server for the current project');
+    }
+
     /**
      * Start a PHP web server for the current project
      *
-     * @param string $address Alternative IP address and port (default: 127.0.0.1:8080)
      * @throws \Symfony\Component\Process\Exception\InvalidArgumentException
      * @throws \Symfony\Component\Process\Exception\LogicException
      * @throws \Symfony\Component\Process\Exception\RuntimeException
+     * @throws \Symfony\Component\Console\Exception\InvalidArgumentException
      */
-    public function runCommand(string $address = '127.0.0.1:8080')
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $address = $input->getArgument('address');
         // Store current md5 of .env file
         $this->dotEnvChanged();
-        $this->outputLine('<info>Server is running at http://%s</info>', [$address]);
-        $this->outputLine('Press Ctrl-C to quit.');
+        $output->writeln(sprintf('<info>Server is running at http://%s</info>', $address));
+        $output->writeln('Press Ctrl-C to quit.');
 
         do {
             $process = $this->getProcess($address);
             $process->disableOutput();
-            $this->cleanDotEnvVarsForSubProcess();
+            $this->forceDotEnvVarsForSubProcess();
             $process->start();
             while ($process->isRunning()) {
                 if ($this->dotEnvChanged()) {
@@ -95,16 +114,17 @@ class ServerCommandController extends CommandController
         return false;
     }
 
-    private function cleanDotEnvVarsForSubProcess()
+    private function forceDotEnvVarsForSubProcess()
     {
         $dotEnfFileName = getenv('TYPO3_PATH_COMPOSER_ROOT') . '/.env';
         if (!class_exists(Dotenv::class) || !file_exists($dotEnfFileName)) {
             return;
         }
         $dotEnv = new Dotenv();
-        foreach ($dotEnv->parse(file_get_contents($dotEnfFileName), $dotEnfFileName) as $name => $_) {
+        foreach ($dotEnv->parse(file_get_contents($dotEnfFileName), $dotEnfFileName) as $name => $value) {
             putenv($name);
-            unset($_ENV[$name], $_SERVER[$name]);
+            $_ENV[$name] = $value;
+            $_SERVER[$name] = $value;
         }
     }
 }

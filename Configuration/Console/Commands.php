@@ -1,10 +1,8 @@
 <?php
 return [
-    'controllers' => [
-        \Typo3Console\PhpServer\Command\ServerCommandController::class,
-    ],
-    'runLevels' => [
-    ],
-    'bootingSteps' => [
+    'commands' => [
+        'server:run' => [
+            'class' => \Typo3Console\PhpServer\Command\ServerRunCommand::class,
+        ],
     ],
 ];
