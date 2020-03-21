@@ -5,7 +5,7 @@
     "require": {
         "php": "^7.0",
         "helhum/typo3-console": "^5.0 || ^6.0",
-        "symfony/process": "^3.3.6 || ^4.0"
+        "symfony/process": "^3.3.6 || ^4.0 || ^5.0"
     },
     "require-dev": {
         "helhum/typo3-composer-setup": "^0.5.1"
