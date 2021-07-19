@@ -3,7 +3,7 @@
     "description" : "PHP server command for TYPO3 Console",
     "license": "GPL-2.0+",
     "require": {
-        "php": "^7.0",
+        "php": ">7.0.5",
         "helhum/typo3-console": "^5.0 || ^6.0",
         "symfony/process": "^3.3.6 || ^4.0 || ^5.0"
     },
