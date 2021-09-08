@@ -1,14 +1,11 @@
 {
     "name": "typo3-console/php-server-command",
     "description" : "PHP server command for TYPO3 Console",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "require": {
-        "php": ">7.0.5",
-        "helhum/typo3-console": "^5.0 || ^6.0",
-        "symfony/process": "^3.3.6 || ^4.0 || ^5.0"
-    },
-    "require-dev": {
-        "helhum/typo3-composer-setup": "^0.5.1"
+        "php": ">=7.4.1",
+        "helhum/typo3-console": "^7.0",
+        "symfony/process": "^4.0 || ^5.0"
     },
     "autoload": {
         "psr-4": {
