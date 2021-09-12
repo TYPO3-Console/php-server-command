@@ -15,7 +15,8 @@
     "extra": {
         "typo3/cms": {
             "Package": {
-                "serviceProvider": "Typo3Console\\PhpServer\\ServiceProvider"
+                "serviceProvider": "Typo3Console\\PhpServer\\ServiceProvider",
+                "partOfMinimalUsableSystem": true
             },
             "web-dir": "public"
         }

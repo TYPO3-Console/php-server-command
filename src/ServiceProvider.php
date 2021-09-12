@@ -52,6 +52,7 @@ class ServiceProvider extends AbstractServiceProvider
     {
         return new ServerRunCommand('server:run');
     }
+
     public static function configureCommands(ContainerInterface $container, CommandRegistry $commandRegistry): CommandRegistry
     {
         $commandRegistry->addLazyCommand('server:run', ServerRunCommand::class, 'Start a PHP web server for the current project');
